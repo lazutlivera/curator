@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchRijksArtworks } from "../services/museums/rijks";
 
-export function useArtwork(searchQuery = '', page = 1) {
+export function useArtwork(searchQuery = '', page = 1, options = {}) {
     return useQuery({
-        queryKey: ["artworks", searchQuery, page],
+        queryKey: ["artworks", searchQuery, page, options.sortBy, options.type],
         queryFn: async () => {
             if (!searchQuery.trim()) {
                 return {
@@ -14,7 +14,7 @@ export function useArtwork(searchQuery = '', page = 1) {
                 };
             }
 
-            const result = await fetchRijksArtworks(searchQuery, page);
+            const result = await fetchRijksArtworks(searchQuery, page, options);
             
             return {
                 data: result.artworks,

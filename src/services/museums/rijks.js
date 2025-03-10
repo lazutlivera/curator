@@ -1,19 +1,26 @@
-export const fetchRijksArtworks = async (searchQuery = '*', page = 1) => {
+export const fetchRijksArtworks = async (searchQuery = '*', page = 1, { sortBy = 'relevance', type = null } = {}) => {
     try {
         const resultsPerPage = 10;
         
-        const url = 'https://www.rijksmuseum.nl/api/en/collection?' +
-            new URLSearchParams({
-                key: '0fiuZFh4',
-                imgonly: true,
-                ps: resultsPerPage,  // page size
-                p: page,            // page number
-                s: 'relevance',     // sort by relevance
-                q: searchQuery,     // search query
-                culture: 'en',      // get English results
-                language: 'en',     // language parameter
-                toppieces: true     // get top pieces for better quality results
-            });
+        // Build query parameters
+        const params = {
+            key: '0fiuZFh4',
+            imgonly: true,
+            ps: resultsPerPage,  // page size
+            p: page,            // page number
+            s: sortBy,          // sort parameter (relevance, artist, chronologic, achronologic)
+            q: searchQuery,     // search query
+            culture: 'en',      // get English results
+            language: 'en',     // language parameter
+            toppieces: true     // get top pieces for better quality results
+        };
+
+        // Add type filter if specified
+        if (type) {
+            params.type = type; // painting, drawing, sculpture, etc.
+        }
+        
+        const url = 'https://www.rijksmuseum.nl/api/en/collection?' + new URLSearchParams(params);
         
         const response = await fetch(url);
 
@@ -65,7 +72,9 @@ export const fetchRijksArtworks = async (searchQuery = '*', page = 1) => {
                     source: 'rijksmuseum',
                     image_url: artwork.webImage.url,
                     artist: artwork.principalOrFirstMaker,
-                    year: artwork.longTitle
+                    year: artwork.longTitle,
+                    type: artwork.objectTypes?.[0] || 'Unknown Type',
+                    dating: artwork.dating?.sortingDate || null
                 };
             });
             

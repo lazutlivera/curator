@@ -6,7 +6,13 @@ function App() {
   const [activeSearch, setActiveSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [expandedImage, setExpandedImage] = useState(null);
-  const { data, isLoading, error } = useArtwork(activeSearch, currentPage);
+  const [sortBy, setSortBy] = useState('relevance');
+  const [artworkType, setArtworkType] = useState(null);
+  
+  const { data, isLoading, error } = useArtwork(activeSearch, currentPage, {
+    sortBy,
+    type: artworkType
+  });
 
   const handleSearch = () => {
     setActiveSearch(searchInput);
@@ -41,7 +47,7 @@ function App() {
     <main className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 flex items-center justify-center">
       <div className="flex flex-col items-center gap-4">
         <div className="text-xl text-emerald-300 animate-pulse">Discovering masterpieces...</div>
-        <div className="text-sm text-emerald-100/70">Exploring the Rijksmuseum collection</div>
+        <div className="text-sm text-emerald-100/70">Exploring the collection</div>
         <div className="w-48 h-1 bg-gray-700 rounded-full overflow-hidden">
           <div className="h-full bg-emerald-500 animate-[loading_2s_ease-in-out_infinite]"></div>
         </div>
@@ -79,21 +85,57 @@ function App() {
           </p>
         </div>
 
-        <div className="flex gap-4 mb-16 relative">
-          <input
-            type="text"
-            placeholder="Search for artworks, artists, or periods..."
-            className="flex-1 p-6 text-lg bg-gray-800/50 border-2 border-emerald-800/50 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 text-gray-100"
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            onKeyPress={handleKeyPress}
-          />
-          <button
-            onClick={handleSearch}
-            className="px-8 py-6 bg-emerald-700 text-emerald-100 rounded-full font-medium hover:bg-emerald-600 transition-colors duration-200 shadow-lg"
-          >
-            Search
-          </button>
+        <div className="flex flex-col gap-4 mb-16">
+          <div className="flex gap-4">
+            <input
+              type="text"
+              placeholder="Search for artworks, artists, or periods..."
+              className="flex-1 p-6 text-lg bg-gray-800/50 border-2 border-emerald-800/50 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 text-gray-100"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              onKeyPress={handleKeyPress}
+            />
+            <button
+              onClick={handleSearch}
+              className="px-8 py-6 bg-emerald-700 text-emerald-100 rounded-full font-medium hover:bg-emerald-600 transition-colors duration-200 shadow-lg"
+            >
+              Search
+            </button>
+          </div>
+          
+          {activeSearch && (
+            <div className="flex gap-4 justify-center items-center p-4 bg-gray-800/30 rounded-xl border border-emerald-900/20">
+              <div className="flex items-center gap-2">
+                <label className="text-emerald-200">Sort by:</label>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="bg-gray-800 border border-emerald-900/30 rounded-lg px-3 py-2 text-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                >
+                  <option value="relevance">Relevance</option>
+                  <option value="chronologic">Date (Oldest First)</option>
+                  <option value="achronologic">Date (Newest First)</option>
+                  <option value="artist">Artist (A-Z)</option>
+                </select>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <label className="text-emerald-200">Type:</label>
+                <select
+                  value={artworkType || ''}
+                  onChange={(e) => setArtworkType(e.target.value || null)}
+                  className="bg-gray-800 border border-emerald-900/30 rounded-lg px-3 py-2 text-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                >
+                  <option value="">All Types</option>
+                  <option value="painting">Paintings</option>
+                  <option value="drawing">Drawings</option>
+                  <option value="sculpture">Sculptures</option>
+                  <option value="photograph">Photographs</option>
+                  <option value="print">Prints</option>
+                </select>
+              </div>
+            </div>
+          )}
         </div>
 
         {activeSearch && artworksToDisplay.length > 0 && (
