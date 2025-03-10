@@ -61,8 +61,6 @@ function App() {
     <main className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-gray-100">
       {/* Subtle border frame */}
       <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-0 opacity-5">
-        <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500"></div>
-        <div className="absolute bottom-0 left-0 w-full h-1 bg-emerald-500"></div>
         <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
         <div className="absolute top-0 right-0 w-1 h-full bg-emerald-500"></div>
       </div>
@@ -146,11 +144,6 @@ function App() {
                     <div className="corner-accent corner-bl"></div>
                     <div className="corner-accent corner-br"></div>
                   </div>
-
-                  {/* Horizontal connector between image and info card */}
-                  <div 
-                    className={`connector-line ${index % 2 === 0 ? 'left-[calc(50%-10px)]' : 'left-[calc(50%-10px)]'} w-20`}
-                  ></div>
 
                   {/* Info Card Section */}
                   <div className={`flex flex-col justify-center md:w-1/2 ${expandedImage === artwork.id ? 'md:w-1/4' : 'md:w-1/2'} transition-all duration-500`}>
