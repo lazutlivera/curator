@@ -61,6 +61,12 @@ export const fetchHarvardArtworks = async (searchQuery = '*', page = 1, { sortBy
         }
 
         const data = await response.json();
+        
+        // Add detailed logging of the first artwork object
+        if (data.records && data.records.length > 0) {
+            console.log('Harvard API - First Artwork Details:', JSON.stringify(data.records[0], null, 2));
+        }
+        
         console.log('Harvard API Response Data:', {
             totalrecords: data.info?.totalrecords,
             records: data.records?.length,
@@ -77,37 +83,17 @@ export const fetchHarvardArtworks = async (searchQuery = '*', page = 1, { sortBy
             };
         }
 
-        // Map the artworks (only filter by title)
+        // Map the artworks (no longer filtering by title)
         const artworks = data.records
-            .filter(artwork => artwork.title)
             .map(artwork => {
                 // Get image URL if available, otherwise null
                 let imageUrl = null;
-                if (artwork.images && artwork.images.length > 0) {
-                    // First try primaryimageurl if available
-                    if (artwork.primaryimageurl) {
-                        imageUrl = artwork.primaryimageurl;
-                    } 
-                    // Then try getting from images array
-                    else {
-                        const primaryImage = artwork.images.find(img => img.primarydisplay) || artwork.images[0];
-                        
-                        // Try IIIF service first
-                        if (primaryImage.iiifbaseuri) {
-                            imageUrl = `${primaryImage.iiifbaseuri}/full/full/0/default.jpg`;
-                        }
-                        // Fallback to base image URL
-                        else if (primaryImage.baseimageurl) {
-                            imageUrl = primaryImage.baseimageurl;
-                        }
-                    }
-
-                    // If we have an image URL that's not IIIF, append size parameters
-                    if (imageUrl && !imageUrl.includes('/full/full/0/default.jpg')) {
-                        imageUrl += '?height=800&width=800';
-                    }
-                }
                 
+                // Simply use primaryimageurl if available
+                if (artwork.primaryimageurl) {
+                    imageUrl = artwork.primaryimageurl;
+                }
+
                 // Get artist name from people array
                 let artist = 'Unknown Artist';
                 if (artwork.people && artwork.people.length > 0) {
@@ -124,9 +110,10 @@ export const fetchHarvardArtworks = async (searchQuery = '*', page = 1, { sortBy
 
                 return {
                     id: `harvard-${artwork.id}`,
-                    title: artwork.title,
+                    title: artwork.title || 'Untitled',
                     source: 'harvard',
                     image_url: imageUrl,
+                    museum_url: artwork.url,
                     artist: artist,
                     year: year,
                     type: artwork.classification || 'Unknown Type',
