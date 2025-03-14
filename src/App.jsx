@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useArtwork } from "./hooks/useArtwork";
+import SearchSuggestions from "./components/SearchSuggestions";
 
 function App() {
   const [searchInput, setSearchInput] = useState('');
@@ -8,16 +9,37 @@ function App() {
   const [expandedImage, setExpandedImage] = useState(null);
   const [sortBy, setSortBy] = useState('relevance');
   const [artworkType, setArtworkType] = useState(null);
+  const [selectedMuseum, setSelectedMuseum] = useState('both');
   
   const { data, isLoading, error } = useArtwork(activeSearch, currentPage, {
     sortBy,
-    type: artworkType
+    type: artworkType,
+    museum: selectedMuseum
   });
 
   const handleSearch = () => {
     setActiveSearch(searchInput);
     setCurrentPage(1); // Reset to first page on new search
     setExpandedImage(null); // Reset expanded image
+  };
+
+  // Add handlers for filter and sort changes
+  const handleSortChange = (newSort) => {
+    setSortBy(newSort);
+    setCurrentPage(1); // Reset to first page when sort changes
+    setExpandedImage(null);
+  };
+
+  const handleTypeChange = (newType) => {
+    setArtworkType(newType || null);
+    setCurrentPage(1); // Reset to first page when type filter changes
+    setExpandedImage(null);
+  };
+
+  const handleMuseumChange = (newMuseum) => {
+    setSelectedMuseum(newMuseum);
+    setCurrentPage(1); // Reset to first page when museum changes
+    setExpandedImage(null);
   };
 
   const handleKeyPress = (e) => {
@@ -81,7 +103,7 @@ function App() {
             CuratorEx
           </h1>
           <p className="text-emerald-100/70 text-lg max-w-2xl mx-auto">
-            Discover masterpieces from the Rijksmuseum through a curator's eye
+            Discover masterpieces from the Rijksmuseum and Harvard Art Museums through a curator's eye
           </p>
         </div>
 
@@ -102,20 +124,43 @@ function App() {
               Search
             </button>
           </div>
+
+          {/* Show search suggestions only when no active search */}
+          {!activeSearch && !isLoading && (
+            <SearchSuggestions 
+              onSuggestionClick={(term) => {
+                setSearchInput(term);
+                setActiveSearch(term);
+                setCurrentPage(1);
+              }} 
+            />
+          )}
           
           {activeSearch && (
-            <div className="flex gap-4 justify-center items-center p-4 bg-gray-800/30 rounded-xl border border-emerald-900/20">
+            <div className="flex flex-wrap gap-4 justify-center items-center p-4 bg-gray-800/30 rounded-xl border border-emerald-900/20">
+              <div className="flex items-center gap-2">
+                <label className="text-emerald-200">Museum:</label>
+                <select
+                  value={selectedMuseum}
+                  onChange={(e) => handleMuseumChange(e.target.value)}
+                  className="bg-gray-800 border border-emerald-900/30 rounded-lg px-3 py-2 text-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                >
+                  <option value="both">Both Museums</option>
+                  <option value="rijksmuseum">Rijksmuseum</option>
+                  <option value="harvard">Harvard Art Museums</option>
+                </select>
+              </div>
+
               <div className="flex items-center gap-2">
                 <label className="text-emerald-200">Sort by:</label>
                 <select
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
+                  onChange={(e) => handleSortChange(e.target.value)}
                   className="bg-gray-800 border border-emerald-900/30 rounded-lg px-3 py-2 text-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 >
                   <option value="relevance">Relevance</option>
                   <option value="chronologic">Date (Oldest First)</option>
                   <option value="achronologic">Date (Newest First)</option>
-                  <option value="artist">Artist (A-Z)</option>
                 </select>
               </div>
               
@@ -123,7 +168,7 @@ function App() {
                 <label className="text-emerald-200">Type:</label>
                 <select
                   value={artworkType || ''}
-                  onChange={(e) => setArtworkType(e.target.value || null)}
+                  onChange={(e) => handleTypeChange(e.target.value)}
                   className="bg-gray-800 border border-emerald-900/30 rounded-lg px-3 py-2 text-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 >
                   <option value="">All Types</option>
@@ -211,7 +256,10 @@ function App() {
                       <div className="flex justify-between items-center mt-auto pt-4 border-t border-emerald-900/30">
                         <span className="uppercase tracking-wide text-xs text-emerald-500/80">{artwork.source}</span>
                         <a 
-                          href={`https://www.rijksmuseum.nl/en/collection/${artwork.id.replace('rijks-', '')}`} 
+                          href={artwork.source === 'rijksmuseum' 
+                            ? `https://www.rijksmuseum.nl/en/collection/${artwork.id.replace('rijks-', '')}`
+                            : `https://harvardartmuseums.org/collections/object/${artwork.id.replace('harvard-', '')}`
+                          } 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="text-emerald-400 hover:text-emerald-300 text-sm"
