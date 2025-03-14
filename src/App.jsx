@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useArtwork } from "./hooks/useArtwork";
+import SearchSuggestions from "./components/SearchSuggestions";
 
 function App() {
   const [searchInput, setSearchInput] = useState('');
@@ -123,6 +124,17 @@ function App() {
               Search
             </button>
           </div>
+
+          {/* Show search suggestions only when no active search */}
+          {!activeSearch && !isLoading && (
+            <SearchSuggestions 
+              onSuggestionClick={(term) => {
+                setSearchInput(term);
+                setActiveSearch(term);
+                setCurrentPage(1);
+              }} 
+            />
+          )}
           
           {activeSearch && (
             <div className="flex flex-wrap gap-4 justify-center items-center p-4 bg-gray-800/30 rounded-xl border border-emerald-900/20">
