@@ -19,12 +19,21 @@ export function useArtwork(searchQuery = '', page = 1, options = {}) {
             let rijksResult = { artworks: [], totalResults: 0, totalPages: 0 };
             let harvardResult = { artworks: [], totalResults: 0, totalPages: 0 };
 
+            // For 'both' museums, split the request to get 5 from each
+            const perMuseumLimit = options.museum === 'both' ? 5 : 10;
+
             if (options.museum === 'both' || options.museum === 'rijksmuseum') {
-                rijksResult = await fetchRijksArtworks(searchQuery, page, options);
+                rijksResult = await fetchRijksArtworks(searchQuery, page, {
+                    ...options,
+                    resultsPerPage: perMuseumLimit
+                });
             }
             
             if (options.museum === 'both' || options.museum === 'harvard') {
-                harvardResult = await fetchHarvardArtworks(searchQuery, page, options);
+                harvardResult = await fetchHarvardArtworks(searchQuery, page, {
+                    ...options,
+                    resultsPerPage: perMuseumLimit
+                });
             }
             
             // Combine artworks from selected sources
@@ -51,15 +60,10 @@ export function useArtwork(searchQuery = '', page = 1, options = {}) {
 
             // Calculate combined totals
             const totalResults = rijksResult.totalResults + harvardResult.totalResults;
-            const totalPages = Math.max(
-                options.museum === 'both' ? rijksResult.totalPages : 0,
-                options.museum === 'both' ? harvardResult.totalPages : 0,
-                options.museum === 'rijksmuseum' ? rijksResult.totalPages : 0,
-                options.museum === 'harvard' ? harvardResult.totalPages : 0
-            );
+            const totalPages = Math.ceil(totalResults / 10); // Always use 10 as total per page
             
             return {
-                data: combinedArtworks,
+                data: combinedArtworks.slice(0, 10), // Ensure we only return 10 results
                 fullData: combinedArtworks,
                 totalResults: totalResults,
                 totalPages: totalPages,

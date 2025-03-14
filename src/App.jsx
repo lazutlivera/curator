@@ -211,15 +211,29 @@ function App() {
                     onClick={() => toggleExpandImage(artwork.id)}
                   >
                     <div className={`relative ${expandedImage === artwork.id ? 'pt-[75%]' : 'pt-[100%]'} transition-all duration-500`}>
-                      <img 
-                        src={artwork.image_url}
-                        alt={artwork.title || 'Artwork'}
-                        className="artwork-image absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                        loading="lazy"
-                        onError={(e) => {
-                          e.target.src = `https://placehold.co/800x600/1f2937/4ade80?text=${encodeURIComponent('Artwork Not Available')}`;
-                        }}
-                      />
+                      {artwork.image_url ? (
+                        <img 
+                          src={artwork.image_url}
+                          alt={artwork.title || 'Artwork'}
+                          className="artwork-image absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                          loading="lazy"
+                          onError={(e) => {
+                            e.target.src = `https://placehold.co/800x600/1f2937/4ade80?text=${encodeURIComponent('Artwork Not Available')}`;
+                          }}
+                        />
+                      ) : (
+                        <a 
+                          href={`https://harvardartmuseums.org/collections/object/${artwork.id.replace('harvard-', '')}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="absolute inset-0 flex items-center justify-center bg-gray-800 text-emerald-300 hover:text-emerald-200 transition-colors"
+                        >
+                          <div className="text-center p-4">
+                            <p>Artwork is available on</p>
+                            <p className="font-medium">Harvard Art Museums website →</p>
+                          </div>
+                        </a>
+                      )}
                       <div className="absolute bottom-4 right-4 bg-emerald-900/80 text-emerald-100 text-xs px-3 py-1 rounded-full">
                         {expandedImage === artwork.id ? 'Click to shrink' : 'Click to expand'}
                       </div>

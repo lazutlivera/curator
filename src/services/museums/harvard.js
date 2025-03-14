@@ -1,6 +1,5 @@
-export const fetchHarvardArtworks = async (searchQuery = '*', page = 1, { sortBy = 'relevance', type = null } = {}) => {
+export const fetchHarvardArtworks = async (searchQuery = '*', page = 1, { sortBy = 'relevance', type = null, resultsPerPage = 10 } = {}) => {
     try {
-        const resultsPerPage = 10;
         const apiKey = import.meta.env.VITE_HARVARD_API_KEY;
         
         if (!apiKey) {
@@ -83,15 +82,15 @@ export const fetchHarvardArtworks = async (searchQuery = '*', page = 1, { sortBy
             };
         }
 
-        // Map the artworks (no longer filtering by title)
+       
         const artworks = data.records
             .map(artwork => {
-                // Get image URL if available, otherwise null
                 let imageUrl = null;
-                
-                // Simply use primaryimageurl if available
+
                 if (artwork.primaryimageurl) {
                     imageUrl = artwork.primaryimageurl;
+                } else if (artwork.images && artwork.images.length > 0 && artwork.images[0].baseimageurl) {
+                    imageUrl = artwork.images[0].baseimageurl;
                 }
 
                 // Get artist name from people array

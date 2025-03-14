@@ -1,7 +1,5 @@
-export const fetchRijksArtworks = async (searchQuery = '*', page = 1, { sortBy = 'relevance', type = null } = {}) => {
+export const fetchRijksArtworks = async (searchQuery = '*', page = 1, { sortBy = 'relevance', type = null, resultsPerPage = 10 } = {}) => {
     try {
-        const resultsPerPage = 10;
-        
         // Build query parameters
         const params = {
             key: '0fiuZFh4',
