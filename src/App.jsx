@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useArtwork } from "./hooks/useArtwork";
 import SearchSuggestions from "./components/SearchSuggestions";
+import Auth from "./components/Auth";
+import { supabase } from "./lib/supabase";
 
 function App() {
+  const [session, setSession] = useState(null)
   const [searchInput, setSearchInput] = useState('');
   const [activeSearch, setActiveSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -16,6 +19,27 @@ function App() {
     type: artworkType,
     museum: selectedMuseum
   });
+
+  useEffect(() => {
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+    })
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  // Add sign out function
+  const handleSignOut = async () => {
+    await supabase.auth.signOut()
+  }
 
   const handleSearch = () => {
     setActiveSearch(searchInput);
@@ -65,6 +89,22 @@ function App() {
   const totalPages = data?.totalPages || 0;
   const totalResults = data?.totalResults || 0;
 
+  if (!session) {
+    return (
+      <main className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-6xl font-serif text-emerald-300 mb-8 tracking-tight">
+            CuratorEx
+          </h1>
+          <p className="text-emerald-100/70 text-lg max-w-2xl mx-auto mb-12">
+            Sign in to discover masterpieces from the world's greatest museums
+          </p>
+          <Auth />
+        </div>
+      </main>
+    )
+  }
+
   if (isLoading) return (
     <main className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 flex items-center justify-center">
       <div className="flex flex-col items-center gap-4">
@@ -87,6 +127,16 @@ function App() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-gray-100">
+      {/* Add sign out button */}
+      <div className="absolute top-4 right-4 z-20">
+        <button
+          onClick={handleSignOut}
+          className="px-4 py-2 bg-gray-800/50 text-emerald-300 rounded-full hover:bg-gray-700/50 transition-colors duration-200"
+        >
+          Sign Out
+        </button>
+      </div>
+      
       {/* Subtle border frame */}
       <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-0 opacity-5">
         <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
