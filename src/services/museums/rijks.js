@@ -1,6 +1,5 @@
 export const fetchRijksArtworks = async (searchQuery = '*', page = 1, { sortBy = 'relevance', type = null, resultsPerPage = 10 } = {}) => {
     try {
-        // Build query parameters
         const params = {
             key: '0fiuZFh4',
             imgonly: true,
@@ -13,9 +12,8 @@ export const fetchRijksArtworks = async (searchQuery = '*', page = 1, { sortBy =
             toppieces: true     // get top pieces for better quality results
         };
 
-        // Add type filter if specified
         if (type) {
-            params.type = type; // painting, drawing, sculpture, etc.
+            params.type = type; 
         }
         
         const url = 'https://www.rijksmuseum.nl/api/en/collection?' + new URLSearchParams(params);
@@ -44,20 +42,16 @@ export const fetchRijksArtworks = async (searchQuery = '*', page = 1, { sortBy =
                 artwork.principalOrFirstMaker
             )
             .map(artwork => {
-                // Check if title might not be in English (contains non-English characters or Dutch words)
                 const dutchWords = ['van', 'de', 'het', 'een', 'en', 'met', 'door', 'op', 'voor'];
                 const hasDutchWords = dutchWords.some(word => 
                     artwork.title.toLowerCase().split(' ').includes(word)
                 );
                 
-                // If title contains Dutch words but also has English title in longTitle, extract it
                 let title = artwork.title;
                 if (hasDutchWords && artwork.longTitle) {
-                    // Try to extract English title from longTitle if it's in format "Dutch Title, English Description"
                     const commaIndex = artwork.longTitle.indexOf(',');
                     if (commaIndex > 0) {
                         const possibleEnglishTitle = artwork.longTitle.substring(commaIndex + 1).trim();
-                        // If the part after comma is substantially different and longer, use it
                         if (possibleEnglishTitle.length > 10 && !artwork.title.includes(possibleEnglishTitle)) {
                             title = possibleEnglishTitle;
                         }
@@ -75,8 +69,7 @@ export const fetchRijksArtworks = async (searchQuery = '*', page = 1, { sortBy =
                     dating: artwork.dating?.sortingDate || null
                 };
             });
-            
-        // Calculate total pages based on count from API
+
         const totalResults = data.count;
         const totalPages = Math.ceil(totalResults / resultsPerPage);
             

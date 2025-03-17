@@ -15,11 +15,11 @@ export function useArtwork(searchQuery = '', page = 1, options = {}) {
                 };
             }
 
-            // Determine which APIs to fetch from based on museum selection
+            
             let rijksResult = { artworks: [], totalResults: 0, totalPages: 0 };
             let harvardResult = { artworks: [], totalResults: 0, totalPages: 0 };
 
-            // For 'both' museums, split the request to get 5 from each
+            
             const perMuseumLimit = options.museum === 'both' ? 5 : 10;
 
             if (options.museum === 'both' || options.museum === 'rijksmuseum') {
@@ -36,13 +36,13 @@ export function useArtwork(searchQuery = '', page = 1, options = {}) {
                 });
             }
             
-            // Combine artworks from selected sources
+            
             const combinedArtworks = [
                 ...rijksResult.artworks,
                 ...harvardResult.artworks
             ];
 
-            // Sort combined results if needed
+            
             if (options.sortBy) {
                 combinedArtworks.sort((a, b) => {
                     switch (options.sortBy) {
@@ -52,18 +52,18 @@ export function useArtwork(searchQuery = '', page = 1, options = {}) {
                             return (b.dating || 0) - (a.dating || 0);
                         case 'artist':
                             return a.artist.localeCompare(b.artist);
-                        default: // 'relevance' - keep original order which is based on each API's relevance
+                        default: 
                             return 0;
                     }
                 });
             }
 
-            // Calculate combined totals
+            
             const totalResults = rijksResult.totalResults + harvardResult.totalResults;
-            const totalPages = Math.ceil(totalResults / 10); // Always use 10 as total per page
+            const totalPages = Math.ceil(totalResults / 10); 
             
             return {
-                data: combinedArtworks.slice(0, 10), // Ensure we only return 10 results
+                data: combinedArtworks.slice(0, 10), 
                 fullData: combinedArtworks,
                 totalResults: totalResults,
                 totalPages: totalPages,
