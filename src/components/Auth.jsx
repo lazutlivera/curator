@@ -3,57 +3,104 @@ import { supabase } from '../lib/supabase'
 
 export default function Auth() {
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [debugInfo, setDebugInfo] = useState(null)
 
   const handleGoogleSignIn = async () => {
     try {
       setLoading(true)
+      setError(null)
+      setDebugInfo(null)
+      
+      console.log("Auth: Starting Google sign-in process")
+
+      const currentUrl = window.location.href
+      console.log("Auth: Current URL before sign-in:", currentUrl)
+
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}`,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'select_account',
-          },
-          flowType: 'popup'
+          redirectTo: `${window.location.origin}/oauth`
         }
       })
       
       if (error) {
+        console.error("Auth: Error initiating OAuth flow:", error)
+        setDebugInfo({
+          error: error.message,
+          errorCode: error.code,
+          status: error.status,
+          details: "Error occurred while initiating the OAuth flow"
+        })
         throw error
       }
 
       if (data?.url) {
-        console.log('Redirect URL:', data.url)
+        console.log('Auth: Redirecting to:', data.url)
+
+        try {
+          localStorage.setItem('lastOAuthRedirectUrl', data.url)
+        } catch (e) {
+          console.warn('Could not store redirect URL in localStorage:', e)
+        }
+
+        window.location.href = data.url
+      } else {
+        const errorMsg = "No redirect URL returned from authentication service"
+        console.error("Auth:", errorMsg)
+        setError(errorMsg)
+        setDebugInfo({
+          error: errorMsg,
+          data: JSON.stringify(data),
+          details: "The OAuth provider did not return a URL to redirect to"
+        })
+        setLoading(false)
       }
       
-      // Handle successful sign in
-      if (data?.session) {
-        console.log('Session established:', data.session)
-      }
-
     } catch (error) {
-      console.error('Authentication error:', error.message)
-      alert(error.message)
-    } finally {
+      console.error("Auth: Authentication error:", error)
+      setError(error.message || "Failed to sign in with Google")
       setLoading(false)
     }
   }
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex flex-col items-center justify-center gap-4">
       <button
         onClick={handleGoogleSignIn}
         disabled={loading}
-        className="flex items-center gap-2 px-6 py-3 bg-white text-gray-800 rounded-full hover:bg-gray-100 transition-colors duration-200 shadow-lg disabled:opacity-50"
+        className="flex items-center justify-center gap-2 px-6 py-3 bg-emerald-700 text-white rounded-full hover:bg-emerald-600 transition-colors duration-200 shadow-lg"
       >
-        <img 
-          src="https://www.google.com/favicon.ico" 
-          alt="Google" 
-          className="w-5 h-5"
-        />
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#ffffff">
+          <path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/>
+        </svg>
         {loading ? 'Signing in...' : 'Sign in with Google'}
       </button>
+      
+      {error && (
+        <div className="bg-red-900/30 border border-red-800 text-red-300 px-4 py-3 rounded relative mt-2 max-w-xs">
+          <strong className="font-bold">Error: </strong>
+          <span className="block sm:inline">{error}</span>
+        </div>
+      )}
+      
+      {debugInfo && (
+        <div className="bg-gray-800/70 border border-emerald-900/30 text-emerald-200/80 px-4 py-3 rounded relative mt-2 max-w-xs text-xs">
+          <strong className="font-bold">Debug Info: </strong>
+          <pre className="mt-2 overflow-auto max-h-40">
+            {JSON.stringify(debugInfo, null, 2)}
+          </pre>
+        </div>
+      )}
+      
+      <div className="text-xs text-gray-400 mt-4 max-w-xs text-center">
+        <p>If you encounter issues signing in, please ensure:</p>
+        <ul className="list-disc pl-5 mt-1 text-left">
+          <li>Your Google account is properly set up</li>
+          <li>You allow pop-ups from this site</li>
+          <li>You accept the necessary permissions</li>
+        </ul>
+      </div>
     </div>
   )
 } 

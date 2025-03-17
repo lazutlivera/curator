@@ -44,7 +44,7 @@ const SearchSuggestions = ({ onSuggestionClick }) => {
                         key={category}
                         className="bg-gray-800/50 rounded-xl p-6 shadow-lg border border-emerald-900/30 relative"
                     >
-                        {/* Corner accents */}
+                      
                         <div className="corner-accent corner-tl"></div>
                         <div className="corner-accent corner-tr"></div>
                         <div className="corner-accent corner-bl"></div>

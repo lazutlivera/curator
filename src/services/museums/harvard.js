@@ -5,21 +5,17 @@ export const fetchHarvardArtworks = async (searchQuery = '*', page = 1, { sortBy
         if (!apiKey) {
             throw new Error('Harvard API key is not configured');
         }
-
-        // Build query parameters
         const params = {
             apikey: apiKey,
             size: resultsPerPage,
-            page: page - 1, // Harvard API uses 0-based pagination
+            page: page - 1, 
             fields: 'id,title,people,images,dated,classification,url,datebegin'
         };
 
-        // Handle search query
         if (searchQuery && searchQuery !== '*') {
             params.q = searchQuery;
         }
 
-        // Add sorting based on Rijksmuseum compatibility
         switch (sortBy) {
             case 'chronologic':
                 params.sort = 'datebegin';
@@ -29,12 +25,10 @@ export const fetchHarvardArtworks = async (searchQuery = '*', page = 1, { sortBy
                 params.sort = 'datebegin';
                 params.sortorder = 'desc';
                 break;
-            default: // 'relevance'
-                // Default Harvard sorting is by rank/score
+            default: 
                 break;
         }
 
-        // Add type filter if specified
         if (type) {
             const typeMap = {
                 'painting': 'Paintings',
@@ -60,8 +54,7 @@ export const fetchHarvardArtworks = async (searchQuery = '*', page = 1, { sortBy
         }
 
         const data = await response.json();
-        
-        // Add detailed logging of the first artwork object
+  
         if (data.records && data.records.length > 0) {
             console.log('Harvard API - First Artwork Details:', JSON.stringify(data.records[0], null, 2));
         }
@@ -92,14 +85,12 @@ export const fetchHarvardArtworks = async (searchQuery = '*', page = 1, { sortBy
                 } else if (artwork.images && artwork.images.length > 0 && artwork.images[0].baseimageurl) {
                     imageUrl = artwork.images[0].baseimageurl;
                 }
-
-                // Get artist name from people array
+           
                 let artist = 'Unknown Artist';
                 if (artwork.people && artwork.people.length > 0) {
                     artist = artwork.people[0].name;
                 }
 
-                // Format the year/date information
                 let year = 'Date unknown';
                 if (artwork.dated) {
                     year = artwork.dated;
@@ -120,7 +111,6 @@ export const fetchHarvardArtworks = async (searchQuery = '*', page = 1, { sortBy
                 };
             });
 
-        // Use the API's total records and calculate pages
         const totalResults = data.info.totalrecords;
         const totalPages = Math.ceil(totalResults / resultsPerPage);
         
