@@ -28,30 +28,12 @@ function App() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session }, error }) => {
       setSession(session)
-      if (session) {
-        console.log("Session user:", session.user)
-        console.log("User metadata:", session.user?.user_metadata)
-        console.log("Avatar URL:", session.user?.user_metadata?.avatar_url)
-        console.log("Full name:", session.user?.user_metadata?.full_name)
-      } else if (error) {
-        console.error("Error getting session:", error)
-      } else {
-        console.log("No active session found")
-      }
     })
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log("Auth state change event:", _event)
       setSession(session)
-      if (session) {
-        console.log("Session updated:", session.user?.email)
-        console.log("User metadata:", session.user?.user_metadata)
-        console.log("Identity providers:", session.user?.identities?.map(id => id.provider))
-      } else {
-        console.log("Session cleared")
-      }
     })
 
     return () => subscription.unsubscribe()
@@ -127,7 +109,6 @@ function App() {
     if (!session?.user) return 'Guest';
     
     const metadata = session.user.user_metadata;
-    console.log("Getting display name from metadata:", metadata);
     
     if (metadata?.full_name) return metadata.full_name;
     if (metadata?.name) return metadata.name;

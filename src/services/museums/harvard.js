@@ -43,7 +43,6 @@ export const fetchHarvardArtworks = async (searchQuery = '*', page = 1, { sortBy
         }
         
         const url = 'https://api.harvardartmuseums.org/object?' + new URLSearchParams(params);
-        console.log('Harvard API Request URL:', url, 'Page:', page);
         
         const response = await fetch(url);
 
@@ -56,15 +55,8 @@ export const fetchHarvardArtworks = async (searchQuery = '*', page = 1, { sortBy
         const data = await response.json();
   
         if (data.records && data.records.length > 0) {
-            console.log('Harvard API - First Artwork Details:', JSON.stringify(data.records[0], null, 2));
         }
         
-        console.log('Harvard API Response Data:', {
-            totalrecords: data.info?.totalrecords,
-            records: data.records?.length,
-            page: data.info?.page,
-            pages: Math.ceil(data.info?.totalrecords / resultsPerPage)
-        });
 
         if (!data.records || !data.records.length) {
             return {
@@ -114,12 +106,6 @@ export const fetchHarvardArtworks = async (searchQuery = '*', page = 1, { sortBy
         const totalResults = data.info.totalrecords;
         const totalPages = Math.ceil(totalResults / resultsPerPage);
         
-        console.log('Harvard API Final Results:', {
-            artworksCount: artworks.length,
-            totalResults,
-            totalPages,
-            currentPage: page
-        });
             
         return {
             artworks,
