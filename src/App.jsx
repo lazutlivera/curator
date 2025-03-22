@@ -208,27 +208,29 @@ function App() {
       </div>
       
       {showProfile ? (
-        <div className="relative">
+        <div className="relative pt-20">
           <button
             onClick={() => setShowProfile(false)}
-            className="absolute top-4 left-4 z-20 px-4 py-2 bg-gray-800/50 text-emerald-300 rounded-full hover:bg-gray-700/50 transition-colors duration-200"
+            className="fixed top-4 left-4 z-20 px-2 sm:px-4 py-2 bg-gray-800/50 text-emerald-300 rounded-full hover:bg-gray-700/50 transition-colors duration-200 flex items-center gap-2"
           >
-            ← Back to Search
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            <span className="hidden sm:inline">Back to Search</span>
           </button>
           <Profile session={session} />
         </div>
       ) : (
         <>
-          <div className="max-w-5xl mx-auto px-6 py-16 min-h-screen flex flex-col relative z-10">
-            <div className="text-center mb-16 relative">
-              {/* Subtle horizontal lines beside title */}
-              <div className="absolute top-1/2 left-0 w-16 h-px bg-gradient-to-r from-transparent to-emerald-500/30 transform -translate-y-1/2"></div>
-              <div className="absolute top-1/2 right-0 w-16 h-px bg-gradient-to-l from-transparent to-emerald-500/30 transform -translate-y-1/2"></div>
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-16 sm:py-16 min-h-screen flex flex-col relative z-10">
+            <div className="text-center mb-8 sm:mb-16 relative">
+              <div className="absolute top-1/2 left-0 w-8 sm:w-16 h-px bg-gradient-to-r from-transparent to-emerald-500/30 transform -translate-y-1/2"></div>
+              <div className="absolute top-1/2 right-0 w-8 sm:w-16 h-px bg-gradient-to-l from-transparent to-emerald-500/30 transform -translate-y-1/2"></div>
               
-              <h1 className="text-6xl font-serif text-emerald-300 mb-4 tracking-tight">
+              <h1 className="text-4xl sm:text-6xl font-serif text-emerald-300 mb-4 tracking-tight">
                 CuratorEx
               </h1>
-              <p className="text-emerald-100/70 text-lg max-w-2xl mx-auto">
+              <p className="text-emerald-100/70 text-base sm:text-lg max-w-2xl mx-auto px-4">
                 {session?.user ? (
                   <>Welcome, <span className="text-emerald-300">{getUserDisplayName()}</span>! Discover masterpieces from the world's greatest museums</>
                 ) : (
@@ -237,19 +239,19 @@ function App() {
               </p>
             </div>
 
-            <div className="flex flex-col gap-4 mb-16">
-              <div className="flex gap-4">
+            <div className="flex flex-col gap-4 mb-8 sm:mb-16">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <input
                   type="text"
                   placeholder="Search for artworks, artists, or periods..."
-                  className="flex-1 p-6 text-lg bg-gray-800/50 border-2 border-emerald-800/50 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 text-gray-100"
+                  className="flex-1 p-4 sm:p-6 text-base sm:text-lg bg-gray-800/50 border-2 border-emerald-800/50 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 text-gray-100"
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
                   onKeyPress={handleKeyPress}
                 />
                 <button
                   onClick={handleSearch}
-                  className="px-8 py-6 bg-emerald-700 text-emerald-100 rounded-full font-medium hover:bg-emerald-600 transition-colors duration-200 shadow-lg"
+                  className="px-6 sm:px-8 py-4 sm:py-6 bg-emerald-700 text-emerald-100 rounded-full font-medium hover:bg-emerald-600 transition-colors duration-200 shadow-lg text-sm sm:text-base"
                 >
                   Search
                 </button>
@@ -266,13 +268,13 @@ function App() {
               )}
               
               {activeSearch && (
-                <div className="flex flex-wrap gap-4 justify-center items-center p-4 bg-gray-800/30 rounded-xl border border-emerald-900/20">
-                  <div className="flex items-center gap-2">
-                    <label className="text-emerald-200">Museum:</label>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center p-4 bg-gray-800/30 rounded-xl border border-emerald-900/20">
+                  <div className="flex items-center gap-2 w-full sm:w-auto">
+                    <label className="text-emerald-200 text-sm">Museum:</label>
                     <select
                       value={selectedMuseum}
                       onChange={(e) => handleMuseumChange(e.target.value)}
-                      className="bg-gray-800 border border-emerald-900/30 rounded-lg px-3 py-2 text-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      className="flex-1 sm:flex-none bg-gray-800 border border-emerald-900/30 rounded-lg px-3 py-2 text-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
                     >
                       <option value="both">Both Museums</option>
                       <option value="rijksmuseum">Rijksmuseum</option>
@@ -280,12 +282,12 @@ function App() {
                     </select>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <label className="text-emerald-200">Sort by:</label>
+                  <div className="flex items-center gap-2 w-full sm:w-auto">
+                    <label className="text-emerald-200 text-sm">Sort by:</label>
                     <select
                       value={sortBy}
                       onChange={(e) => handleSortChange(e.target.value)}
-                      className="bg-gray-800 border border-emerald-900/30 rounded-lg px-3 py-2 text-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      className="flex-1 sm:flex-none bg-gray-800 border border-emerald-900/30 rounded-lg px-3 py-2 text-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
                     >
                       <option value="relevance">Relevance</option>
                       <option value="chronologic">Date (Oldest First)</option>
@@ -293,12 +295,12 @@ function App() {
                     </select>
                   </div>
                   
-                  <div className="flex items-center gap-2">
-                    <label className="text-emerald-200">Type:</label>
+                  <div className="flex items-center gap-2 w-full sm:w-auto">
+                    <label className="text-emerald-200 text-sm">Type:</label>
                     <select
                       value={artworkType || ''}
                       onChange={(e) => handleTypeChange(e.target.value)}
-                      className="bg-gray-800 border border-emerald-900/30 rounded-lg px-3 py-2 text-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      className="flex-1 sm:flex-none bg-gray-800 border border-emerald-900/30 rounded-lg px-3 py-2 text-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
                     >
                       <option value="">All Types</option>
                       <option value="painting">Paintings</option>
@@ -314,12 +316,12 @@ function App() {
 
             {activeSearch && artworksToDisplay.length > 0 && (
               <>
-                <div className="mb-8 text-emerald-300 font-serif text-xl pb-4 relative">
+                <div className="mb-6 sm:mb-8 text-emerald-300 font-serif text-lg sm:text-xl pb-4 relative">
                   <div className="divider absolute bottom-0 left-0 w-full"></div>
                   Found {totalResults} results for "{activeSearch}"
                 </div>
                 
-                <div className="flex flex-col gap-16 flex-grow mb-12 artwork-grid relative">
+                <div className="flex flex-col gap-8 sm:gap-16 flex-grow mb-8 sm:mb-12 artwork-grid relative">
                   <div className="absolute inset-0 bg-grid-pattern"></div>
                   
                   {artworksToDisplay.map((artwork, index) => (
@@ -327,22 +329,20 @@ function App() {
                       key={artwork.id}
                       className={`flex flex-col md:flex-row gap-8 ${index % 2 === 1 ? 'md:flex-row-reverse' : ''} relative`}
                     >
-                      {index < artworksToDisplay.length - 1 && (
-                        <div className="connector-vertical absolute left-1/2 -ml-px bottom-0 h-16 -mb-16"></div>
-                      )}
+                    
+                      <div className="hidden md:block connector-vertical absolute left-1/2 -ml-px top-0 h-16 -mt-16"></div>
                       
                       <div 
-                        className={`relative overflow-hidden rounded-xl shadow-xl transition-all duration-500 cursor-pointer group
-                          ${expandedImage === artwork.id ? 'md:w-3/4' : 'md:w-1/2'}`}
+                        className={`relative overflow-hidden rounded-xl shadow-xl transition-all duration-500 cursor-pointer group w-full md:w-1/2 ${expandedImage === artwork.id ? 'md:w-3/4 md:relative fixed inset-0 z-50 md:z-auto' : ''}`}
                         onClick={() => toggleExpandImage(artwork.id)}
                       >
-                        <div className={`relative ${expandedImage === artwork.id ? 'pt-[75%]' : 'pt-[100%]'} transition-all duration-500`}>
+                        <div className={`relative ${expandedImage === artwork.id ? 'md:pt-[75%] h-screen md:h-auto' : 'pt-[100%]'} transition-all duration-500`}>
                           {artwork.image_url ? (
                             <>
                               <img 
                                 src={artwork.image_url}
                                 alt={artwork.title || 'Artwork'}
-                                className="artwork-image absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                                className={`artwork-image absolute inset-0 w-full h-full ${expandedImage === artwork.id ? 'object-contain bg-gray-900/95 md:object-cover md:bg-transparent' : 'object-cover'} transition-transform duration-500 ${expandedImage === artwork.id ? 'md:scale-100' : 'hover:scale-105'}`}
                                 loading="lazy"
                                 onError={(e) => {
                                   e.target.src = `https://placehold.co/800x600/1f2937/4ade80?text=${encodeURIComponent('Artwork Not Available')}`;
@@ -350,28 +350,67 @@ function App() {
                               />
                               <button
                                 onClick={(e) => handleAddToCollection(artwork, e)}
-                                className="absolute top-4 right-4 p-2 bg-emerald-700/90 rounded-full opacity-0 group-hover:opacity-100 hover:bg-emerald-600 transition-all duration-200 z-10"
+                                className="hidden md:block absolute top-4 right-4 p-2 bg-emerald-700/90 rounded-full opacity-0 group-hover:opacity-100 hover:bg-emerald-600 transition-all duration-200 z-10"
                                 title="Add to collection"
                               >
                                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                                 </svg>
                               </button>
+                              {expandedImage === artwork.id && (
+                                <div className="md:hidden absolute top-4 right-4 flex gap-3">
+                                  <button
+                                    onClick={(e) => handleAddToCollection(artwork, e)}
+                                    className="p-2 bg-emerald-700/90 rounded-full hover:bg-emerald-600 transition-all duration-200 z-10"
+                                    title="Add to collection"
+                                  >
+                                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                    </svg>
+                                  </button>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setExpandedImage(null);
+                                    }}
+                                    className="p-2 bg-gray-800/90 rounded-full hover:bg-gray-700 transition-all duration-200 z-10"
+                                    title="Close"
+                                  >
+                                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                  </button>
+                                </div>
+                              )}
                             </>
                           ) : (
-                            <a 
-                              href={`https://harvardartmuseums.org/collections/object/${artwork.id.replace('harvard-', '')}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="absolute inset-0 flex items-center justify-center bg-gray-800 text-emerald-300 hover:text-emerald-200 transition-colors"
-                            >
-                              <div className="text-center p-4">
+                            <div className="absolute inset-0 flex items-center justify-center bg-gray-800 text-emerald-300">
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  handleAddToCollection(artwork, e);
+                                }}
+                                className="absolute top-4 right-4 p-2 bg-emerald-700/90 rounded-full hover:bg-emerald-600 transition-all duration-200 z-10"
+                                title="Add to collection"
+                              >
+                                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                </svg>
+                              </button>
+                              <a 
+                                href={`https://harvardartmuseums.org/collections/object/${artwork.id.replace('harvard-', '')}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-center p-4 hover:text-emerald-200 transition-colors"
+                                onClick={(e) => e.stopPropagation()}
+                              >
                                 <p>Artwork is available on</p>
                                 <p className="font-medium">Harvard Art Museums website →</p>
-                              </div>
-                            </a>
+                              </a>
+                            </div>
                           )}
-                          <div className="absolute bottom-4 right-4 bg-emerald-900/80 text-emerald-100 text-xs px-3 py-1 rounded-full">
+                          <div className="hidden md:block absolute bottom-4 right-4 bg-emerald-900/80 text-emerald-100 text-xs px-3 py-1 rounded-full">
                             {expandedImage === artwork.id ? 'Click to shrink' : 'Click to expand'}
                           </div>
                         </div>
@@ -382,22 +421,24 @@ function App() {
                         <div className="corner-accent corner-br"></div>
                       </div>
 
-                      <div className={`flex flex-col justify-center md:w-1/2 ${expandedImage === artwork.id ? 'md:w-1/4' : 'md:w-1/2'} transition-all duration-500`}>
-                        <div className="info-card bg-gray-800/50 p-8 rounded-xl border border-emerald-900/30 shadow-lg h-full flex flex-col relative">
+                      <div className={`flex flex-col justify-center w-full md:w-1/2 ${expandedImage === artwork.id ? 'md:w-1/4' : ''} transition-all duration-500 relative`}>
+                        <div className="md:hidden connector-vertical absolute left-1/2 -ml-px top-0 h-8 -mt-8"></div>
+                        
+                        <div className="info-card bg-gray-800/50 p-6 sm:p-8 rounded-xl border border-emerald-900/30 shadow-lg h-full flex flex-col relative">
                           <div className="corner-accent corner-tl rounded-tl-xl"></div>
                           <div className="corner-accent corner-tr rounded-tr-xl"></div>
                           <div className="corner-accent corner-bl rounded-bl-xl"></div>
                           <div className="corner-accent corner-br rounded-br-xl"></div>
                           
-                          <h2 className="text-2xl font-serif text-emerald-200 mb-4 leading-tight">
+                          <h2 className="text-xl sm:text-2xl font-serif text-emerald-200 mb-3 sm:mb-4 leading-tight">
                             {artwork.title}
                           </h2>
                           
-                          <div className="mb-6 flex items-center">
-                            <span className="text-emerald-400 font-medium">{artwork.artist || 'Unknown Artist'}</span>
+                          <div className="mb-4 sm:mb-6 flex items-center">
+                            <span className="text-emerald-400 font-medium text-sm sm:text-base">{artwork.artist || 'Unknown Artist'}</span>
                           </div>
                           
-                          <p className="text-gray-400 mb-6 flex-grow">
+                          <p className="text-gray-400 mb-4 sm:mb-6 flex-grow text-sm sm:text-base">
                             {artwork.year}
                           </p>
                           
@@ -410,7 +451,7 @@ function App() {
                               } 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="text-emerald-400 hover:text-emerald-300 text-sm"
+                              className="text-emerald-400 hover:text-emerald-300 text-xs sm:text-sm"
                             >
                               View in museum →
                             </a>
@@ -422,23 +463,23 @@ function App() {
                 </div>
 
                 {totalPages > 1 && (
-                  <div className="flex justify-center gap-2 mt-12 pb-8 relative">
+                  <div className="flex justify-center gap-2 mt-8 sm:mt-12 pb-8 relative">
                     <div className="absolute top-0 left-1/2 w-px h-8 -mt-8 bg-gradient-to-b from-transparent to-emerald-500/30"></div>
                     
                     <button
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
-                      className="px-5 py-3 bg-gray-800 border-2 border-emerald-900/50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:border-emerald-600 transition-colors duration-200 text-emerald-300"
+                      className="px-4 sm:px-5 py-2 sm:py-3 bg-gray-800 border-2 border-emerald-900/50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:border-emerald-600 transition-colors duration-200 text-emerald-300 text-sm"
                     >
                       Previous
                     </button>
-                    <span className="px-5 py-3 text-emerald-200 bg-gray-800/50 rounded-lg border border-emerald-900/30">
+                    <span className="px-4 sm:px-5 py-2 sm:py-3 text-emerald-200 bg-gray-800/50 rounded-lg border border-emerald-900/30 text-sm">
                       Page {currentPage} of {totalPages}
                     </span>
                     <button
                       onClick={() => handlePageChange(currentPage + 1)}
                       disabled={currentPage === totalPages}
-                      className="px-5 py-3 bg-gray-800 border-2 border-emerald-900/50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:border-emerald-600 transition-colors duration-200 text-emerald-300"
+                      className="px-4 sm:px-5 py-2 sm:py-3 bg-gray-800 border-2 border-emerald-900/50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:border-emerald-600 transition-colors duration-200 text-emerald-300 text-sm"
                     >
                       Next
                     </button>
@@ -448,15 +489,15 @@ function App() {
             )}
 
             {activeSearch && artworksToDisplay.length === 0 && (
-              <div className="text-center text-gray-400 mt-12 flex-grow flex items-center justify-center">
-                <div className="info-card bg-gray-800/50 p-10 rounded-xl border border-emerald-900/30 shadow-lg relative">
+              <div className="text-center text-gray-400 mt-8 sm:mt-12 flex-grow flex items-center justify-center">
+                <div className="info-card bg-gray-800/50 p-6 sm:p-10 rounded-xl border border-emerald-900/30 shadow-lg relative">
                   <div className="corner-accent corner-tl rounded-tl-xl"></div>
                   <div className="corner-accent corner-tr rounded-tr-xl"></div>
                   <div className="corner-accent corner-bl rounded-bl-xl"></div>
                   <div className="corner-accent corner-br rounded-br-xl"></div>
                   
-                  <p className="text-xl text-emerald-300 mb-2">No artworks found</p>
-                  <p className="text-emerald-100/50">Try different search terms or explore our collection</p>
+                  <p className="text-lg sm:text-xl text-emerald-300 mb-2">No artworks found</p>
+                  <p className="text-emerald-100/50 text-sm sm:text-base">Try different search terms or explore our collection</p>
                 </div>
               </div>
             )}
