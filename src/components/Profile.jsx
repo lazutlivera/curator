@@ -52,7 +52,6 @@ export default function Profile({ session }) {
 
   return (
     <div className="max-w-6xl mx-auto p-4">
-      {/* User Info Section */}
       <div className="bg-gray-800/50 rounded-lg p-6 mb-8 border border-emerald-900/30">
         <div className="flex items-center gap-4">
           {session.user.user_metadata?.avatar_url ? (
@@ -75,7 +74,6 @@ export default function Profile({ session }) {
         </div>
       </div>
 
-      {/* Collections Section */}
       <div>
         <h3 className="text-xl font-semibold text-emerald-300 mb-4">My Collections</h3>
         
@@ -112,7 +110,6 @@ export default function Profile({ session }) {
         )}
       </div>
 
-      {/* Selected Collection Modal */}
       {selectedCollection && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
           <div className="bg-gray-800 rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">

@@ -117,17 +117,17 @@ export default function AddToCollection({ artwork, userId, onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
-      <div className="bg-gray-800 rounded-lg p-6 max-w-md w-full">
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="text-xl font-bold text-emerald-300">
+    <div className="fixed inset-0 bg-black/80 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50">
+      <div className="bg-gray-800 rounded-t-xl sm:rounded-lg p-4 sm:p-6 w-full sm:max-w-md max-h-[90vh] overflow-y-auto">
+        <div className="flex justify-between items-center mb-4 sm:mb-6 sticky top-0 bg-gray-800 pb-2 border-b border-emerald-900/30">
+          <h3 className="text-lg sm:text-xl font-bold text-emerald-300">
             Add to Collection
           </h3>
           <button
             onClick={onClose}
-            className="text-emerald-100/70 hover:text-emerald-100"
+            className="text-emerald-100/70 hover:text-emerald-100 p-2 -mr-2"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -140,7 +140,6 @@ export default function AddToCollection({ artwork, userId, onClose }) {
           </div>
         ) : (
           <>
-            {/* Create New Collection */}
             <div className="mb-6">
               <label className="block text-emerald-300 text-sm font-medium mb-2">
                 Create New Collection
@@ -151,36 +150,35 @@ export default function AddToCollection({ artwork, userId, onClose }) {
                   value={newCollectionName}
                   onChange={(e) => setNewCollectionName(e.target.value)}
                   placeholder="Collection name"
-                  className="flex-1 bg-gray-900 text-emerald-100 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="flex-1 bg-gray-900 text-emerald-100 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-base"
                 />
                 <button
                   onClick={handleCreateCollection}
                   disabled={loading}
-                  className="px-4 py-2 bg-emerald-700 text-white rounded hover:bg-emerald-600 transition-colors disabled:opacity-50"
+                  className="px-4 py-2.5 bg-emerald-700 text-white rounded-lg hover:bg-emerald-600 transition-colors disabled:opacity-50 text-base whitespace-nowrap"
                 >
                   Create
                 </button>
               </div>
             </div>
 
-            {/* Existing Collections */}
             <div>
               <label className="block text-emerald-300 text-sm font-medium mb-2">
                 Or Add to Existing Collection
               </label>
-              <div className="space-y-2 max-h-60 overflow-y-auto">
+              <div className="space-y-2 max-h-60 overflow-y-auto rounded-lg">
                 {collections.map((collection) => (
                   <button
                     key={collection.id}
                     onClick={() => handleAddToCollection(collection.id)}
                     disabled={loading}
-                    className="w-full text-left px-4 py-2 bg-gray-900/50 text-emerald-100 rounded hover:bg-gray-700/50 transition-colors disabled:opacity-50"
+                    className="w-full text-left px-4 py-3 bg-gray-900/50 text-emerald-100 rounded-lg hover:bg-gray-700/50 transition-colors disabled:opacity-50 text-base"
                   >
                     {collection.name}
                   </button>
                 ))}
                 {collections.length === 0 && (
-                  <p className="text-emerald-100/70 text-sm text-center py-2">
+                  <p className="text-emerald-100/70 text-sm text-center py-3 bg-gray-900/30 rounded-lg">
                     No collections yet
                   </p>
                 )}
@@ -188,7 +186,7 @@ export default function AddToCollection({ artwork, userId, onClose }) {
             </div>
 
             {error && (
-              <div className="mt-4 bg-red-900/30 border border-red-800 text-red-300 px-4 py-3 rounded text-sm">
+              <div className="mt-4 bg-red-900/30 border border-red-800 text-red-300 px-4 py-3 rounded-lg text-sm">
                 {error}
               </div>
             )}
