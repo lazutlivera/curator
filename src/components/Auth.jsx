@@ -12,10 +12,8 @@ export default function Auth() {
       setError(null)
       setDebugInfo(null)
       
-      console.log("Auth: Starting Google sign-in process")
 
       const currentUrl = window.location.href
-      console.log("Auth: Current URL before sign-in:", currentUrl)
 
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -36,7 +34,6 @@ export default function Auth() {
       }
 
       if (data?.url) {
-        console.log('Auth: Redirecting to:', data.url)
 
         try {
           localStorage.setItem('lastOAuthRedirectUrl', data.url)
@@ -70,7 +67,6 @@ export default function Auth() {
       setError(null)
       setDebugInfo(null)
       
-      console.log("Auth: Starting test user sign-in")
       
       const { data, error } = await supabase.auth.signInWithPassword({
         email: 'test@curatorex.com',
@@ -88,7 +84,6 @@ export default function Auth() {
         throw error
       }
       
-      console.log("Auth: Test user sign-in successful", data)
       
     } catch (error) {
       console.error("Auth: Test user authentication error:", error)
