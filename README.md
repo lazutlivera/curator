@@ -2,6 +2,10 @@
 
 A digital art exploration platform that combines artworks from the Rijksmuseum and Harvard Art Museums into a unified search experience.
 
+## Video Walkthrough
+
+Watch a quick demo of CuratorEx's features: [Video Demo](https://youtu.be/eimolylswWM)
+
 ## Features
 
 - Search across two major museum collections simultaneously
